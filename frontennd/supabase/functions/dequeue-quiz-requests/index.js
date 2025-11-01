@@ -1,15 +1,15 @@
+import { createClient } from "npm:@supabase/supabase-js@2";
+
 Deno.serve(async (req) => {
+  console.log(req);
   const supabase = createClient(
     Deno.env.get("SUPABASE_URL") ?? "",
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
-    {
-      global: {
-        headers: { Authorization: req.headers.get("Authorization") },
-      },
-    },
   );
 
-  const request = await supabase
+  const {
+    data: [{ message: request }],
+  } = await supabase
     .schema("pgmq_public")
     .rpc("pop", { queue_name: "quiz_requests" });
   console.log(request);
@@ -132,9 +132,9 @@ Deno.serve(async (req) => {
         modifier: "頼れる",
         description:
           "組織を牽引し、明確なビジョンで周囲を導く天性のリーダー。決断力と実行力に優れ、責任感を持って目標達成に邁進します。困難な状況でも冷静に判断し、チーム全体を成功へと導く力があります。",
-        strengths: [Array],
-        weeknesses: [Array],
-        good_match: [Object],
+        strengths: [],
+        weeknesses: [],
+        good_match: [],
         advice:
           "時には一歩引いて、チームメンバーの声に耳を傾ける時間を作りましょう。あなたの決断力は素晴らしいですが、多様な意見を取り入れることでさらに強 固な戦略が生まれます。定期的に1on1の時間を設け、信頼関係を深めることが長期的な成功につながります。",
       },
@@ -143,9 +143,9 @@ Deno.serve(async (req) => {
         modifier: "献身的な",
         description:
           "チームの縁の下の力持ちとして、周囲を支える温かい存在。他者のニーズを敏感に察知し、適切なサポートを提供する能力に長けています。協調性が高く、組織全体の調和を保つ重要な役割を果たします。",
-        strengths: [Array],
-        weeknesses: [Array],
-        good_match: [Object],
+        strengths: [],
+        weeknesses: [],
+        good_match: [],
         advice:
           "あなたの献身は素晴らしいですが、時には自分の意見や希望をしっかり伝えることも大切です。週に一度は自分のための時間を確保し、キャリアの目標を 見直しましょう。適切に「ノー」と言う練習をすることで、より持続可能なサポートができるようになります。",
       },
@@ -154,9 +154,9 @@ Deno.serve(async (req) => {
         modifier: "革新的な",
         description:
           "既成概念にとらわれない自由な発想で、新しい価値を生み出すイノベーター。独創的なアイデアと柔軟な思考で、組織に新鮮な風を吹き込みます。変化を恐れず、常に次の可能性を追求する姿勢が魅力です。",
-        strengths: [Array],
-        weeknesses: [Array],
-        good_match: [Object],
+        strengths: [],
+        weeknesses: [],
+        good_match: [],
         advice:
           "素晴らしいアイデアを持っているあなたには、それを形にする実行力も必要です。アイデアをメモする習慣をつけ、優先順位をつけて一つずつ実現させま しょう。信頼できる実務担当者とタッグを組むことで、あなたの創造性が最大限に活かされます。",
       },
@@ -165,64 +165,86 @@ Deno.serve(async (req) => {
         modifier: "堅実な",
         description:
           "確実性と安定性を重視し、着実に成果を積み上げる信頼のプロフェッショナル。決められた手順を正確に遂行する能力に優れ、組織の基盤を支えます。計画的で丁寧な仕事ぶりは、周囲に安心感を与えます。",
-        strengths: [Array],
-        weeknesses: [Array],
-        good_match: [Object],
+        strengths: [],
+        weeknesses: [],
+        good_match: [],
         advice:
           "あなたの安定感は組織にとって貴重な財産ですが、時には小さなチャレンジも取り入れてみましょう。月に一つ、新しいスキルや方法を試す目標を立てる ことで、さらなる成長が期待できます。変化を恐れず、あなたの堅実さと新しい挑戦を組み合わせることが、キャリアの幅を広げます。",
       },
     ],
   };
 
-  const {
-    data: [quiz],
-  } = await supabase
-    .from("quizzes")
-    .insert({
-      creator_id: request.creator_id,
-      title: response.quizzes.title,
-      description: response.quizzes.description,
-    })
-    .select();
+  const quiz = await (async () => {
+    const { data, error } = await supabase
+      .from("quizzes")
+      .insert({
+        creator_id: request.creator_id,
+        title: response.quizzes.title,
+        description: response.quizzes.description,
+        content: "",
+      })
+      .select();
+    if (error) {
+      throw error;
+    }
+    return data[0];
+  })();
   console.log(quiz);
-  const { data: quizElements } = await supabase
-    .from("quiz_elements")
-    .insert([
-      response.quiz_elements.map((item) => {
-        return {
-          quiz_id: quiz.id,
-          content: item.question_text,
-        };
-      }),
-    ])
-    .select();
+
+  const quizElements = await (async () => {
+    const { data, error } = await supabase
+      .from("quiz_elements")
+      .insert(
+        response.quiz_elements.map((item) => {
+          return {
+            quiz_id: quiz.id,
+            content: item.question_text,
+          };
+        }),
+      )
+      .select();
+    if (error) {
+      throw error;
+    }
+    return data;
+  })();
   console.log(quizElements);
-  const { data: quizResults } = await supabase
-    .from("quiz_results")
-    .insert([
-      response.quiz_results.map((item) => {
-        return {
-          quiz_id: quiz.id,
-          title: item.base_type,
-          content: item.description,
-        };
-      }),
-    ])
-    .select();
+
+  const quizResults = await (async () => {
+    const { data, error } = await supabase
+      .from("quiz_results")
+      .insert(
+        response.quiz_results.map((item) => {
+          return {
+            quiz_id: quiz.id,
+            title: item.base_type,
+            content: item.description,
+          };
+        }),
+      )
+      .select();
+    if (error) {
+      throw error;
+    }
+    return data;
+  })();
   console.log(quizResults);
   const quizElementScores = [];
   quizElements.forEach((quizElement, i) => {
     for (const quizResult of quizResults) {
-      elementScores.push({
+      quizElementScores.push({
         quiz_element_id: quizElement.id,
         quiz_result_id: quizResult.id,
         score: response.quiz_elements[i].type_weights[quizResult.title],
       });
     }
   });
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("quiz_element_score")
     .insert(quizElementScores);
+  if (error) {
+    throw error;
+  }
   console.log(data);
 
   return new Response(JSON.stringify({ message: "ok" }), {

@@ -1,14 +1,20 @@
-// Follow this setup guide to integrate the Deno language server with your editor:
-// https://deno.land/manual/getting_started/setup_your_environment
-// This enables autocomplete, go to definition, etc.
-
-// Setup type definitions for built-in Supabase Runtime APIs
-import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { createClient } from "npm:@supabase/supabase-js@2";
 
 console.log("Hello from Functions!");
 
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type",
+};
+
 Deno.serve(async (req) => {
-  const data = await req.json();
+  // This is needed if you're planning to invoke your function from a browser.
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
+
+  const { title, description, questions_count, types } = await req.json();
 
   const supabase = createClient(
     Deno.env.get("SUPABASE_URL") ?? "",
@@ -18,16 +24,18 @@ Deno.serve(async (req) => {
   const {
     data: { user },
   } = await supabase.auth.getUser(token);
-  supabase.schema("pgmq_public").rpc("send", {
+  console.log(user);
+  const result = await supabase.schema("pgmq_public").rpc("send", {
     queue_name: "quiz_requests",
     message: {
       title,
       description,
-      question_count,
+      questions_count,
       types,
       creator_id: user.id,
     },
   });
+  console.log(result);
 
   return new Response(JSON.stringify({ message: "ok" }), {
     headers: { "Content-Type": "application/json" },

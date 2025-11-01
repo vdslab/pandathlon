@@ -1,4 +1,5 @@
 import "./globals.css";
+import Link from "next/link";
 
 export default function RootLayout({ children }) {
   return (
@@ -29,14 +30,16 @@ export default function RootLayout({ children }) {
                   </svg>
                 </label>
               </div>
-              <div className="mx-2 flex-1 px-2">カス診断</div>
+              <div className="mx-2 flex-1 px-2">
+                <Link href="/">カス診断</Link>
+              </div>
               <div className="hidden flex-none lg:block">
                 <ul className="menu menu-horizontal">
                   <li>
-                    <a>Navbar Item 1</a>
+                    <Link href="/login">ログイン</Link>
                   </li>
                   <li>
-                    <a>Navbar Item 2</a>
+                    <Link href="/signup">サインアップ</Link>
                   </li>
                 </ul>
               </div>
@@ -55,10 +58,10 @@ export default function RootLayout({ children }) {
             ></label>
             <ul className="menu bg-base-200 min-h-full w-80 p-4">
               <li>
-                <a>Sidebar Item 1</a>
+                <Link href="/login">ログイン</Link>
               </li>
               <li>
-                <a>Sidebar Item 2</a>
+                <Link href="/signup">サインアップ</Link>
               </li>
             </ul>
           </div>

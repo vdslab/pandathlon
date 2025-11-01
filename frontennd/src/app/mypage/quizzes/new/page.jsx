@@ -14,11 +14,16 @@ export default function MyQuizNewPage() {
       questions_count: formData.get("questions_count"),
       types: formData.getAll("types"),
     };
+    console.log(data);
     const supabase = createClient();
-    const result = await supabase.schema("pgmq_public").rpc("send", {
-      queue_name: "quiz_requests",
-      message: data,
-    });
+    const { result, error } = await supabase.functions.invoke(
+      "enqueue-quiz-requests",
+      {
+        body: data,
+      },
+    );
+    console.log(result);
+    console.log(error);
   }
 
   return (

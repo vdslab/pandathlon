@@ -350,22 +350,22 @@ s3_secret_key = "env(S3_SECRET_KEY)"
 
 [functions.enqueue-quiz-requests]
 enabled = true
-verify_jwt = true
+verify_jwt = false
 import_map = "./functions/enqueue-quiz-requests/deno.json"
 # Uncomment to specify a custom file path to the entrypoint.
 # Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
-entrypoint = "./functions/enqueue-quiz-requests/index.ts"
+entrypoint = "./functions/enqueue-quiz-requests/index.js"
 # Specifies static files to be bundled with the function. Supports glob patterns.
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/enqueue-quiz-requests/*.html" ]
 
 [functions.dequeue-quiz-requests]
 enabled = true
-verify_jwt = true
+verify_jwt = false
 import_map = "./functions/dequeue-quiz-requests/deno.json"
 # Uncomment to specify a custom file path to the entrypoint.
 # Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
-entrypoint = "./functions/dequeue-quiz-requests/index.ts"
+entrypoint = "./functions/dequeue-quiz-requests/index.js"
 # Specifies static files to be bundled with the function. Supports glob patterns.
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/dequeue-quiz-requests/*.html" ]
