@@ -36,12 +36,12 @@ Frontend (Next.js App) ←→ Supabase (Backend Services)
 
 ### 1. Queue-Based Quiz Generation
 
-**Pattern**: Producer-Consumer with Message Queue
+**Pattern**: Producer-Consumer with Message Queue (Error-Tolerant)
 
 **Flow**:
 
 ```
-User Request → enqueue-quiz-requests → PGMQ Queue → dequeue-quiz-requests → Database
+User Request → enqueue-quiz-requests → quiz_requests DB + PGMQ Queue → dequeue-quiz-requests → Database
 ```
 
 **Components**:
@@ -49,12 +49,18 @@ User Request → enqueue-quiz-requests → PGMQ Queue → dequeue-quiz-requests 
 - **Producer** (`enqueue-quiz-requests`):
 
   - Validates user authentication
-  - Queues quiz creation request with user parameters
+  - Inserts to quiz_requests table FIRST (gets auto-generated ID)
+  - Includes quiz_requests_id in PGMQ message
   - Returns immediately (non-blocking)
+  - Error if database insert fails
 
 - **Consumer** (`dequeue-quiz-requests`):
-  - Polls queue for new requests
+  - Uses PGMQ `read` (non-destructive) instead of `pop`
+  - Visibility timeout: 30 seconds
+  - Returns early if queue is empty
   - Processes quiz generation (currently with hardcoded data, TODO: LLM integration)
+  - On success: Deletes quiz_requests by ID, archives PGMQ message
+  - On error: Message remains in queue for automatic retry
   - Stores results in database tables
 
 **Benefits**:
@@ -63,6 +69,9 @@ User Request → enqueue-quiz-requests → PGMQ Queue → dequeue-quiz-requests 
 - Handles spike in requests
 - Allows time-intensive LLM processing
 - Scalable processing
+- **Error recovery**: Failed requests automatically retry
+- **Data integrity**: No data loss on processing errors
+- **Precise tracking**: quiz_requests_id enables exact record matching
 
 ### 2. Authentication Pattern
 

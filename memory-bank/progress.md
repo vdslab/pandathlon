@@ -435,6 +435,14 @@ None identified yet (limited testing so far)
   - [x] Added 14 icon sizes (48x48 to 512x512)
   - [x] Integrated metadata in layout.jsx
   - [x] Configured favicon, theme color, and apple-touch-icons
+- [x] Queue processing error handling (2025/11/02)
+  - [x] Changed enqueue to insert quiz_requests first, get ID
+  - [x] Include quiz_requests_id in PGMQ message
+  - [x] Changed dequeue from pop to read (non-destructive)
+  - [x] Add empty queue check
+  - [x] Wrap processing in try-catch
+  - [x] Delete by ID on success, message stays on error
+  - [x] Automatic retry via visibility timeout
 
 ### 🔄 In Progress
 

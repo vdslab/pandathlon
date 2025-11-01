@@ -4,7 +4,9 @@
 
 ### Immediate Status
 
-**Latest Update (2025/11/02)**: PWA manifest integration completed. Added manifest.json and icon files to frontend/public, integrated into layout.jsx using Next.js Metadata API for Progressive Web App capabilities.
+**Latest Update (2025/11/02)**: Queue processing error handling improved. Fixed critical issue where PGMQ messages were deleted immediately on read, causing data loss on errors. Implemented proper read-archive pattern with quiz_requests_id tracking for reliable queue management and error recovery.
+
+**Previous Update (2025/11/02)**: PWA manifest integration completed. Added manifest.json and icon files to frontend/public, integrated into layout.jsx using Next.js Metadata API for Progressive Web App capabilities.
 
 **Previous Update (2025/11/02)**: Mypage functionality enhancement completed. Implemented user's created quiz management, pending quiz tracking via quiz_requests table, quiz edit page with publish toggle, and improved navigation/homepage.
 
@@ -321,6 +323,68 @@ Currently, the `dequeue-quiz-requests` function uses hardcoded mock data to demo
       - Proper icons on home screen and app switcher
       - Theme color in mobile browser address bar
       - Better user experience and engagement
+
+18. **Queue Processing Error Handling** (NEWLY COMPLETED - 2025/11/02)
+
+    - **Problem Identified**:
+
+      - Previous implementation used PGMQ `pop` which immediately deleted messages
+      - If processing failed after message was popped, the request was lost forever
+      - No way to retry failed quiz generation requests
+      - quiz_requests table deletion used ambiguous criteria (creator_id + title)
+
+    - **enqueue-quiz-requests improvements**:
+
+      - Now inserts to quiz_requests table FIRST to get auto-generated ID
+      - Includes quiz_requests_id in PGMQ message payload
+      - Returns 500 error if quiz_requests insert fails
+      - Ensures every queued message has a corresponding database record
+
+    - **dequeue-quiz-requests improvements**:
+
+      - Changed from `pop` to `read` (non-destructive message retrieval)
+      - Parameters: vt=30 (visibility timeout), qty=1 (one message at a time)
+      - Added empty queue check - returns success if no messages available
+      - Wrapped all processing in try-catch block
+      - On success:
+        - Deletes quiz_requests record by ID (precise deletion)
+        - Archives PGMQ message (removes from queue)
+        - Returns quiz_id in response
+      - On error:
+        - Message remains in queue
+        - Automatically becomes available after visibility timeout (30s)
+        - Enables automatic retry without manual intervention
+
+    - **Benefits**:
+
+      - **Data integrity**: No data loss on processing errors
+      - **Automatic retry**: Failed requests retry after timeout
+      - **Precise tracking**: quiz_requests_id enables exact record matching
+      - **Graceful degradation**: Empty queue doesn't cause errors
+      - **Better debugging**: Detailed error logs at each step
+      - **Idempotency ready**: Foundation for preventing duplicate processing
+
+    - **Error Recovery Flow**:
+
+      ```
+      1. Message read from queue (30s visibility timeout)
+      2. Processing begins
+      3a. Success path:
+          - All DB operations complete
+          - quiz_requests deleted by ID
+          - Message archived from PGMQ
+      3b. Error path:
+          - Error caught and logged
+          - Message stays in queue
+          - After 30s, message visible again
+          - Automatic retry on next dequeue
+      ```
+
+    - **Implementation Details**:
+      - Uses PGMQ `read` RPC function instead of `pop`
+      - Uses PGMQ `archive` RPC function for successful completion
+      - Visibility timeout prevents concurrent processing of same message
+      - Comprehensive logging for monitoring and debugging
 
 ## Next Steps
 
