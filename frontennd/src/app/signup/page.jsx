@@ -1,11 +1,15 @@
 import Link from "next/link";
-import { login } from "./actions";
+import { signup } from "./actions";
 
-export default function LoginPage() {
+export default function SignupPage() {
   return (
     <form>
       <fieldset className="fieldset bg-base-200 border-base-300 w-full rounded-box border p-4">
-        <legend className="fieldset-legend">ログイン</legend>
+        <legend className="fieldset-legend">サインアップ</legend>
+        <label htmlFor="name" className="label">
+          ニックネーム
+        </label>
+        <input id="name" name="name" type="text" className="input w-full" />
         <label htmlFor="email" className="label">
           Email:
         </label>
@@ -26,12 +30,12 @@ export default function LoginPage() {
           className="input w-full"
           required
         />
-        <button className="btn btn-accent mt-4 w-full" formAction={login}>
-          ログイン
+        <button className="btn btn-accent mt-4 w-full" formAction={signup}>
+          サインアップ
         </button>
         <div className="divider">または</div>
-        <Link href="/signup" className="btn btn-ghost w-full">
-          アカウントをお持ちでない方はサインアップ
+        <Link href="/login" className="btn btn-ghost w-full">
+          アカウントをお持ちの方はログイン
         </Link>
       </fieldset>
     </form>

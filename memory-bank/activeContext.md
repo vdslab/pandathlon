@@ -7,9 +7,10 @@
 The project has established its core infrastructure and basic functionality:
 
 - Frontend scaffolding is complete
-- Authentication flow is implemented
+- Authentication flow is fully implemented with separated signup/login pages
 - Quiz creation form is functional
 - Queue-based processing infrastructure is in place
+- Dynamic navigation based on authentication state
 - **Primary gap**: LLM integration for quiz generation
 
 ### Active Task Area
@@ -26,28 +27,37 @@ Currently, the `dequeue-quiz-requests` function uses hardcoded mock data to demo
 
 ### What's Been Built
 
-1. **Quiz Creation Interface** (`/mypage/quizzes/new`)
+1. **Authentication System** (Recently Improved)
+
+   - Separated signup page (`/signup`) from login page (`/login`)
+   - Login page: Email/password only, link to signup
+   - Signup page: Email/password/nickname, link to login
+   - Logout functionality in `login/actions.js`
+   - Dynamic navigation: shows login button when logged out, logout button when logged in
+   - Layout.jsx now async server component that checks auth state
+
+2. **Quiz Creation Interface** (`/mypage/quizzes/new`)
 
    - Dynamic form for quiz parameters
    - User can add/remove result types
    - Form validation in place
    - Calls enqueue function on submit
 
-2. **Queue Infrastructure**
+3. **Queue Infrastructure**
 
    - PGMQ integration working
    - Enqueue function receives and queues requests
    - Dequeue function processes queue (with mock data)
 
-3. **Data Model**
+4. **Data Model**
 
    - Database schema defined with proper relationships
    - Quiz → Elements → Scores → Results structure
    - Many-to-many relationship through quiz_element_score table
 
-4. **Page Structure**
+5. **Page Structure**
    - All major routes defined
-   - Navigation and layout implemented
+   - Navigation and layout implemented with auth state awareness
    - Japanese UI throughout
 
 ## Next Steps
@@ -127,12 +137,14 @@ This structure should be maintained when implementing LLM integration.
 
 ### Authentication Flow
 
-**Working Pattern**:
+**Improved Pattern**:
 
-- Login uses server actions
+- Separate pages for login (`/login`) and signup (`/signup`)
+- Both use server actions for auth operations
+- Logout functionality implemented as server action
+- Navigation dynamically shows login/logout based on auth state
 - Quiz creation uses client-side function
-- Both patterns work but inconsistent
-- May want to standardize on one approach
+- Layout is async server component that checks auth state
 
 ## Important Patterns & Preferences
 
@@ -215,10 +227,15 @@ The separation of quiz_elements and quiz_element_score is elegant:
 
 ### Key Files to Understand
 
+- **Authentication**:
+  - Login page: `frontennd/src/app/login/page.jsx`
+  - Login actions: `frontennd/src/app/login/actions.js` (login, logout)
+  - Signup page: `frontennd/src/app/signup/page.jsx`
+  - Signup actions: `frontennd/src/app/signup/actions.js`
 - **Quiz Form**: `frontennd/src/app/mypage/quizzes/new/page.jsx`
 - **Enqueue**: `frontennd/supabase/functions/enqueue-quiz-requests/index.js`
 - **Dequeue (needs LLM)**: `frontennd/supabase/functions/dequeue-quiz-requests/index.js`
-- **Layout**: `frontennd/src/app/layout.jsx`
+- **Layout**: `frontennd/src/app/layout.jsx` (async server component with auth state)
 - **Supabase Clients**: `frontennd/src/utils/supabase/*.js`
 
 ### Unimplemented Pages (shells exist)

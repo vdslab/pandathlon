@@ -6,7 +6,7 @@
 
 - **Next.js App** - Running on React 19 with Next.js 16 App Router
 - **Supabase Integration** - Backend services connected and operational
-- **Authentication System** - Login/signup flow with cookie-based sessions
+- **Authentication System** - Complete login/signup flow with separated pages and dynamic navigation
 - **Database Schema** - Tables defined with proper relationships
 - **Message Queue** - PGMQ working for async job processing
 
@@ -29,8 +29,8 @@
 
 ### ✅ UI/UX Components
 
-- **Navigation** - Drawer-based responsive navigation
-- **Layout System** - Global layout with consistent styling
+- **Navigation** - Drawer-based responsive navigation with auth-aware display
+- **Layout System** - Global async layout with auth state checking
 - **Japanese Interface** - All user-facing text in Japanese
 - **DaisyUI Components** - Consistent design system
 
@@ -39,7 +39,8 @@
 All major routes are defined and accessible:
 
 - Root page (`/`)
-- Login/signup pages
+- Login page (`/login`) - Email/password with link to signup
+- Signup page (`/signup`) - Email/password/nickname with link to login
 - User dashboard (`/mypage`)
 - Quiz creation page
 - Quiz browsing pages (structure in place)
@@ -189,11 +190,11 @@ None identified yet (limited testing so far)
 
 ### ⚠️ Technical Debt
 
-1. **Inconsistent Form Handling**
+1. **Form Handling Patterns**
 
-   - Login uses server actions
+   - Auth uses server actions (login, signup, logout)
    - Quiz creation uses client-side function
-   - Should standardize approach
+   - Both patterns work, standardization not critical
 
 2. **Missing TypeScript**
 
@@ -320,11 +321,12 @@ None identified yet (limited testing so far)
 
 - [x] Project initialization
 - [x] Supabase setup
-- [x] Authentication flow
+- [x] Authentication flow (improved with separated pages and dynamic navigation)
 - [x] Database schema
 - [x] Quiz creation form
 - [x] Queue infrastructure
 - [x] Basic navigation
+- [x] Logout functionality
 
 ### 🔄 In Progress
 

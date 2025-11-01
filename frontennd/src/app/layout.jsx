@@ -1,7 +1,14 @@
 import "./globals.css";
 import Link from "next/link";
+import { createClient } from "../utils/supabase/server";
+import { logout } from "./login/actions";
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   return (
     <html lang="ja">
       <body>
@@ -35,12 +42,19 @@ export default function RootLayout({ children }) {
               </div>
               <div className="hidden flex-none lg:block">
                 <ul className="menu menu-horizontal">
-                  <li>
-                    <Link href="/login">ログイン</Link>
-                  </li>
-                  <li>
-                    <Link href="/signup">サインアップ</Link>
-                  </li>
+                  {user ? (
+                    <li>
+                      <form action={logout}>
+                        <button type="submit" className="btn btn-ghost">
+                          ログアウト
+                        </button>
+                      </form>
+                    </li>
+                  ) : (
+                    <li>
+                      <Link href="/login">ログイン</Link>
+                    </li>
+                  )}
                 </ul>
               </div>
             </div>
@@ -57,12 +71,19 @@ export default function RootLayout({ children }) {
               className="drawer-overlay"
             ></label>
             <ul className="menu bg-base-200 min-h-full w-80 p-4">
-              <li>
-                <Link href="/login">ログイン</Link>
-              </li>
-              <li>
-                <Link href="/signup">サインアップ</Link>
-              </li>
+              {user ? (
+                <li>
+                  <form action={logout}>
+                    <button type="submit" className="btn btn-ghost w-full">
+                      ログアウト
+                    </button>
+                  </form>
+                </li>
+              ) : (
+                <li>
+                  <Link href="/login">ログイン</Link>
+                </li>
+              )}
             </ul>
           </div>
         </div>
