@@ -71,6 +71,40 @@ export default async function RootLayout({ children }) {
               className="drawer-overlay"
             ></label>
             <ul className="menu bg-base-200 min-h-full w-80 p-4">
+              <li className="menu-title">
+                <span>診断を探す</span>
+              </li>
+              <li>
+                <Link href="/quizzes">すべての診断</Link>
+              </li>
+              <li>
+                <Link href="/quizzes/hot">人気の診断</Link>
+              </li>
+              <li>
+                <Link href="/quizzes/recent">最近の診断</Link>
+              </li>
+              {user && (
+                <>
+                  <li className="menu-title mt-4">
+                    <span>マイページ</span>
+                  </li>
+                  <li>
+                    <Link href="/mypage">ダッシュボード</Link>
+                  </li>
+                  <li>
+                    <Link href="/mypage/quizzes/new">診断を作る</Link>
+                  </li>
+                  <li>
+                    <Link href="/mypage/history">診断履歴</Link>
+                  </li>
+                  <li>
+                    <Link href="/mypage/favorite">お気に入り</Link>
+                  </li>
+                </>
+              )}
+              <li className="menu-title mt-4">
+                <span>アカウント</span>
+              </li>
               {user ? (
                 <li>
                   <form action={logout}>
