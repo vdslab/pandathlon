@@ -430,6 +430,11 @@ None identified yet (limited testing so far)
   - [x] Quiz edit page with publish toggle
   - [x] Pending quiz tracking and display
   - [x] Homepage improvement
+- [x] PWA manifest integration (2025/11/02)
+  - [x] Added manifest.json to frontend/public
+  - [x] Added 14 icon sizes (48x48 to 512x512)
+  - [x] Integrated metadata in layout.jsx
+  - [x] Configured favicon, theme color, and apple-touch-icons
 
 ### 🔄 In Progress
 
