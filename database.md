@@ -16,10 +16,8 @@ CREATE TABLE public.answer_details (
 CREATE TABLE public.answers (
   id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
   created_at timestamp with time zone NOT NULL DEFAULT now(),
-  user_id uuid,
   quiz_id bigint NOT NULL,
   CONSTRAINT answers_pkey PRIMARY KEY (id),
-  CONSTRAINT answers_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id),
   CONSTRAINT answers_quiz_id_fkey FOREIGN KEY (quiz_id) REFERENCES public.quizzes(id)
 );
 CREATE TABLE public.bookmarks (
@@ -35,7 +33,6 @@ CREATE TABLE public.creators (
   created_at timestamp with time zone NOT NULL DEFAULT now(),
   name text NOT NULL DEFAULT ''::text,
   CONSTRAINT creators_pkey PRIMARY KEY (id),
-  CONSTRAINT creators_id_fkey FOREIGN KEY (id) REFERENCES auth.users(id),
   CONSTRAINT creators_id_fkey1 FOREIGN KEY (id) REFERENCES auth.users(id)
 );
 CREATE TABLE public.quiz_element_score (
@@ -54,6 +51,14 @@ CREATE TABLE public.quiz_elements (
   content text NOT NULL,
   CONSTRAINT quiz_elements_pkey PRIMARY KEY (id),
   CONSTRAINT quiz_elements_quiz_id_fkey FOREIGN KEY (quiz_id) REFERENCES public.quizzes(id)
+);
+CREATE TABLE public.quiz_requests (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  creator_id uuid NOT NULL,
+  content json NOT NULL,
+  CONSTRAINT quiz_requests_pkey PRIMARY KEY (id),
+  CONSTRAINT quiz_requests_creator_id_fkey FOREIGN KEY (creator_id) REFERENCES public.creators(id)
 );
 CREATE TABLE public.quiz_results (
   id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
@@ -74,5 +79,13 @@ CREATE TABLE public.quizzes (
   creator_id uuid NOT NULL,
   CONSTRAINT quizzes_pkey PRIMARY KEY (id),
   CONSTRAINT personality_quizzes_creator_id_fkey FOREIGN KEY (creator_id) REFERENCES public.creators(id)
+);
+CREATE TABLE public.user_answers (
+  answer_id bigint NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  user_id uuid NOT NULL,
+  CONSTRAINT user_answers_pkey PRIMARY KEY (answer_id, user_id),
+  CONSTRAINT user_answers_answer_id_fkey FOREIGN KEY (answer_id) REFERENCES public.answers(id),
+  CONSTRAINT user_answers_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id)
 );
 ```

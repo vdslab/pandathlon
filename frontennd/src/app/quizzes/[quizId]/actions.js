@@ -11,12 +11,11 @@ export async function submitQuizAnswers(quizId, answers) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Insert answer record
+  // Insert answer record (without user_id)
   const { data: answerData, error: answerError } = await supabase
     .from("answers")
     .insert({
       quiz_id: quizId,
-      user_id: user?.id || null,
     })
     .select()
     .single();
@@ -40,6 +39,21 @@ export async function submitQuizAnswers(quizId, answers) {
   if (detailsError) {
     console.error("Error inserting answer details:", detailsError);
     throw new Error("回答の送信に失敗しました");
+  }
+
+  // If user is logged in, link answer to user in user_answers table
+  if (user?.id) {
+    const { error: userAnswerError } = await supabase
+      .from("user_answers")
+      .insert({
+        answer_id: answerData.id,
+        user_id: user.id,
+      });
+
+    if (userAnswerError) {
+      console.error("Error linking answer to user:", userAnswerError);
+      // Continue to redirect even if linking fails (answer is already saved)
+    }
   }
 
   // Redirect to results page

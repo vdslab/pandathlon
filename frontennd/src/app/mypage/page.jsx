@@ -25,9 +25,9 @@ export default async function MyPage() {
     .select("*", { count: "exact", head: true })
     .eq("created_by", user.id);
 
-  // Get user's answer count
+  // Get user's answer count (from user_answers table)
   const { count: answersCount } = await supabase
-    .from("answers")
+    .from("user_answers")
     .select("*", { count: "exact", head: true })
     .eq("user_id", user.id);
 
@@ -37,23 +37,35 @@ export default async function MyPage() {
     .select("*", { count: "exact", head: true })
     .eq("user_id", user.id);
 
-  // Get recent answers (latest 3)
-  const { data: recentAnswers } = await supabase
-    .from("answers")
+  // Get recent answers (latest 3) through user_answers table
+  const { data: userAnswersData } = await supabase
+    .from("user_answers")
     .select(
       `
-      id,
+      answer_id,
       created_at,
-      quiz_id,
-      quizzes (
+      answers!inner (
         id,
-        title
+        quiz_id,
+        quizzes (
+          id,
+          title
+        )
       )
     `,
     )
     .eq("user_id", user.id)
     .order("created_at", { ascending: false })
     .limit(3);
+
+  // Transform data structure to match previous format
+  const recentAnswers =
+    userAnswersData?.map((ua) => ({
+      id: ua.answers.id,
+      created_at: ua.created_at,
+      quiz_id: ua.answers.quiz_id,
+      quizzes: ua.answers.quizzes,
+    })) || [];
 
   // Get recent bookmarks (latest 3)
   const { data: recentBookmarks } = await supabase

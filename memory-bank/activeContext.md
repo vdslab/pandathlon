@@ -4,6 +4,8 @@
 
 ### Immediate Status
 
+**Latest Update (2025/11/02)**: Database schema migration completed - separated `user_id` from `answers` table to new `user_answers` table. Frontend adapted to support both public quiz result viewing and protected user history.
+
 The project has achieved significant progress with most core features implemented:
 
 - Frontend scaffolding is complete
@@ -184,6 +186,7 @@ Currently, the `dequeue-quiz-requests` function uses hardcoded mock data to demo
       - "View all" links for recent activity sections
 
 14. **Authentication Middleware Fix** (2025/11/02)
+
     - Fixed overly restrictive middleware that was redirecting all unauthenticated users to `/login`
     - Modified `utils/supabase/middleware.js` to only protect `/mypage/*` routes
     - Public routes now accessible without authentication:
@@ -195,6 +198,34 @@ Currently, the `dequeue-quiz-requests` function uses hardcoded mock data to demo
     - Implementation: Simple path check `request.nextUrl.pathname.startsWith("/mypage")`
     - Allows anonymous users to browse and take quizzes
     - Only redirects to login when accessing personal user data
+
+15. **Database Schema Migration - user_answers Separation** (2025/11/02)
+    - Separated `user_id` from `answers` table into new `user_answers` junction table
+    - **Purpose**:
+      - Enable public viewing of all quiz results (answers table)
+      - Protect logged-in users' personal quiz history (user_answers table)
+      - Support anonymous quiz taking (answers without user linkage)
+    - **Schema Changes**:
+      - `answers` table: Removed `user_id` column
+      - `user_answers` table: New table with `answer_id`, `user_id`, `created_at`
+    - **Frontend Adaptations**:
+      1. `/quizzes/[quizId]/actions.js` - Answer submission:
+         - Inserts to `answers` table without `user_id`
+         - If user logged in, additionally inserts to `user_answers` to link answer to user
+         - Continues to redirect even if user_answers insert fails (answer already saved)
+      2. `/mypage/history/page.jsx` - User quiz history:
+         - Changed from direct `answers` query to `user_answers` join
+         - Uses `user_answers.answer_id → answers → quizzes` relationship
+         - Transforms data structure to maintain UI compatibility
+      3. `/mypage/page.jsx` - User dashboard statistics:
+         - Changed "Taken quizzes count" to query `user_answers` table
+         - Changed "Recent answers" to query through `user_answers` with joins
+         - Maintains same data structure through transformation
+    - **Benefits**:
+      - Anonymous users can take quizzes and view any results
+      - Logged-in users have protected history in `/mypage/history`
+      - Quiz result pages remain publicly accessible via answerId
+      - Separation of concerns: public data vs. user-specific data
 
 ## Next Steps
 

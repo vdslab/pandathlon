@@ -118,15 +118,37 @@ users (Supabase Auth)
 quizzes
   ├── quiz_elements (questions)
   │     └── quiz_element_score (weights per result type)
-  └── quiz_results (personality types)
+  ├── quiz_results (personality types)
+  └── answers (quiz responses)
+        ├── answer_details (individual question answers)
+        └── user_answers (user linkage - optional)
 ```
 
 **Relationships**:
 
-- Quiz → Creator (user_id/creator_id)
+- Quiz → Creator (creator_id)
 - Quiz → Multiple Elements (questions)
 - Quiz → Multiple Results (personality types)
 - Element × Result → Score weight (many-to-many)
+- Quiz → Multiple Answers (anyone can answer)
+- Answer → Multiple Answer Details (one per question)
+- Answer ← User (optional via user_answers junction table)
+
+**Key Schema Pattern - Public Answers with Protected User History**:
+
+The `answers` and `user_answers` separation enables:
+
+- Public quiz result viewing (answers table has no user_id)
+- Anonymous quiz taking (answers without user linkage)
+- Protected user history (user_answers links answers to users)
+- User can view their own history in `/mypage/history`
+- Anyone can view any result via `answerId` parameter
+
+Tables:
+
+- `answers` (id, quiz_id, created_at) - Public quiz responses
+- `answer_details` (answer_id, quiz_element_id, answer) - Individual answers
+- `user_answers` (answer_id, user_id, created_at) - Optional user linkage
 
 ### 4. Component Organization
 

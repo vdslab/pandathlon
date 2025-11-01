@@ -19,18 +19,21 @@ export default async function HistoryPage() {
     redirect("/login");
   }
 
-  // Get user's answer history
-  const { data: answers, error: answersError } = await supabase
-    .from("answers")
+  // Get user's answer history through user_answers table
+  const { data: userAnswers, error: answersError } = await supabase
+    .from("user_answers")
     .select(
       `
-      id,
+      answer_id,
       created_at,
-      quiz_id,
-      quizzes (
+      answers!inner (
         id,
-        title,
-        description
+        quiz_id,
+        quizzes (
+          id,
+          title,
+          description
+        )
       )
     `,
     )
@@ -44,6 +47,15 @@ export default async function HistoryPage() {
       </div>
     );
   }
+
+  // Transform data structure to match previous format
+  const answers =
+    userAnswers?.map((ua) => ({
+      id: ua.answers.id,
+      created_at: ua.created_at,
+      quiz_id: ua.answers.quiz_id,
+      quizzes: ua.answers.quizzes,
+    })) || [];
 
   return (
     <div className="max-w-4xl mx-auto">

@@ -68,9 +68,11 @@ All major routes are defined and accessible:
 
 - **Answer Submission** (`/quizzes/[quizId]/actions.js`)
   - Server action handles form submission
-  - Records user_id if logged in, null if anonymous
-  - Inserts data to `answers` and `answer_details` tables
+  - Inserts to `answers` table (without user_id)
+  - If user is logged in, additionally links via `user_answers` table
+  - Inserts individual question answers to `answer_details` table
   - Redirects to results page
+  - Supports both anonymous and authenticated quiz taking
 
 ### ✅ Quiz Discovery Pages (NEWLY COMPLETED)
 
@@ -94,9 +96,10 @@ All major routes are defined and accessible:
 
 - **User History** (`/mypage/history`)
   - Login required
-  - Lists user's quiz-taking history
+  - Lists user's quiz-taking history via `user_answers` table
   - Links to view results or retake
   - Shows timestamps
+  - Protected user data (only shows user's own history)
 
 ### ✅ Enhanced Navigation & Home Page
 
@@ -419,6 +422,7 @@ None identified yet (limited testing so far)
 - [x] Shared quiz display components (NEWLY COMPLETED)
 - [x] User dashboard portal page (NEWLY COMPLETED - 2025/11/02)
 - [x] Authentication middleware fix (NEWLY COMPLETED - 2025/11/02)
+- [x] Database schema migration - user_answers separation (NEWLY COMPLETED - 2025/11/02)
 
 ### 🔄 In Progress
 
