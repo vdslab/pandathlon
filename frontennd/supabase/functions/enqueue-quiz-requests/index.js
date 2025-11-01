@@ -25,19 +25,33 @@ Deno.serve(async (req) => {
     data: { user },
   } = await supabase.auth.getUser(token);
   console.log(user);
+
+  const message = {
+    title,
+    description,
+    questions_count,
+    types,
+    creator_id: user.id,
+  };
+
+  // Send to PGMQ
   const result = await supabase.schema("pgmq_public").rpc("send", {
     queue_name: "quiz_requests",
-    message: {
-      title,
-      description,
-      questions_count,
-      types,
-      creator_id: user.id,
-    },
+    message: message,
   });
   console.log(result);
 
+  // Save to quiz_requests table
+  const { error: insertError } = await supabase.from("quiz_requests").insert({
+    creator_id: user.id,
+    content: message,
+  });
+
+  if (insertError) {
+    console.error("Error inserting quiz request:", insertError);
+  }
+
   return new Response(JSON.stringify({ message: "ok" }), {
-    headers: { "Content-Type": "application/json" },
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
   });
 });

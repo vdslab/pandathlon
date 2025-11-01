@@ -4,7 +4,7 @@
 
 ### Immediate Status
 
-**Latest Update (2025/11/02)**: Database schema migration completed - separated `user_id` from `answers` table to new `user_answers` table. Frontend adapted to support both public quiz result viewing and protected user history.
+**Latest Update (2025/11/02)**: Mypage functionality enhancement completed. Implemented user's created quiz management, pending quiz tracking via quiz_requests table, quiz edit page with publish toggle, and improved navigation/homepage.
 
 The project has achieved significant progress with most core features implemented:
 
@@ -200,6 +200,7 @@ Currently, the `dequeue-quiz-requests` function uses hardcoded mock data to demo
     - Only redirects to login when accessing personal user data
 
 15. **Database Schema Migration - user_answers Separation** (2025/11/02)
+
     - Separated `user_id` from `answers` table into new `user_answers` junction table
     - **Purpose**:
       - Enable public viewing of all quiz results (answers table)
@@ -226,6 +227,63 @@ Currently, the `dequeue-quiz-requests` function uses hardcoded mock data to demo
       - Logged-in users have protected history in `/mypage/history`
       - Quiz result pages remain publicly accessible via answerId
       - Separation of concerns: public data vs. user-specific data
+
+16. **Mypage Functionality Enhancement** (NEWLY COMPLETED - 2025/11/02)
+
+    - **Login Redirect Update**:
+
+      - `login/actions.js` now redirects to `/mypage` instead of `/` after successful login
+
+    - **Quiz Requests Table Integration**:
+
+      - Modified `enqueue-quiz-requests` function to save requests to both PGMQ and `quiz_requests` table
+      - Modified `dequeue-quiz-requests` function to delete from `quiz_requests` table after processing
+      - Enables UI display of pending quizzes
+
+    - **User's Created Quizzes Page** (`/mypage/quizzes`):
+
+      - New page listing all user's quizzes
+      - Displays pending quizzes (from quiz_requests table) with processing status
+      - Displays completed quizzes with published/unpublished badges
+      - Shows statistics: answer count, creation date
+      - Links to edit page and preview (for published quizzes)
+
+    - **Quiz Edit Page** (`/mypage/quizzes/[quizId]`):
+
+      - New edit page for managing individual quizzes
+      - Displays quiz information and statistics (questions, result types, answers, bookmarks)
+      - PublishedToggle component for managing quiz visibility
+      - Breadcrumb navigation
+      - Security: creator_id validation ensures users can only edit their own quizzes
+      - Links to preview published quizzes in new tab
+
+    - **Publish Toggle Feature**:
+
+      - `PublishedToggle.jsx`: Client component with optimistic UI updates
+      - `actions.js`: Server action for updating published status
+      - Uses useTransition for smooth UX
+      - Instant feedback with loading spinner
+      - Error handling with state reversion
+
+    - **Dashboard Updates** (`/mypage`):
+
+      - Added pending quizzes alert when quiz_requests exist
+      - Added "Processing Quizzes" section showing latest 3 pending quizzes
+      - Each pending quiz card shows title, question count, result types, creation time
+      - Links to full quiz list for details
+
+    - **Navigation Enhancement**:
+
+      - Added "作成した診断" (Created Quizzes) link to sidebar menu
+      - Placed between "診断を作る" and "診断履歴"
+
+    - **Homepage Improvement** (`/`):
+
+      - Removed redundant "マイページ" section
+      - Added conditional link card:
+        - Logged in users: Link to マイページダッシュボード (green gradient)
+        - Not logged in: Link to ログイン page (purple/pink gradient)
+      - Improved user flow and visual hierarchy
 
 ## Next Steps
 
@@ -437,12 +495,12 @@ The separation of quiz_elements and quiz_element_score is elegant:
 - **Supabase Clients**: `frontennd/src/utils/supabase/*.js`
 
 - **User Dashboard** (NEW):
-  - Dashboard page: `frontennd/src/app/mypage/page.jsx` (Server Component)
-
-### Remaining Unimplemented Pages
-
-- `/mypage/quizzes` - User's created quizzes list
-- `/mypage/quizzes/[quizId]` - User's quiz detail/edit page
+  - Dashboard page: `frontennd/src/app/mypage/page.jsx` (Server Component with pending quiz alerts)
+- **Quiz Management** (NEW):
+  - Created quizzes list: `frontennd/src/app/mypage/quizzes/page.jsx` (Server Component)
+  - Quiz edit page: `frontennd/src/app/mypage/quizzes/[quizId]/page.jsx` (Server Component)
+  - Publish toggle: `frontennd/src/app/mypage/quizzes/[quizId]/PublishedToggle.jsx` (Client Component)
+  - Server actions: `frontennd/src/app/mypage/quizzes/[quizId]/actions.js`
 
 ## Environment & Configuration
 

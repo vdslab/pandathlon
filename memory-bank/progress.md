@@ -412,17 +412,24 @@ None identified yet (limited testing so far)
 - [x] Queue infrastructure
 - [x] Enhanced navigation with categorized menu
 - [x] Logout functionality
-- [x] Quiz taking flow (NEWLY COMPLETED)
-- [x] Results calculation and display (NEWLY COMPLETED)
-- [x] Quiz browsing (all/hot/recent) (NEWLY COMPLETED)
-- [x] User quiz history (NEWLY COMPLETED)
-- [x] Home page enhancement (NEWLY COMPLETED)
-- [x] SNS sharing functionality (NEWLY COMPLETED)
-- [x] Bookmark/favorite system (NEWLY COMPLETED)
-- [x] Shared quiz display components (NEWLY COMPLETED)
-- [x] User dashboard portal page (NEWLY COMPLETED - 2025/11/02)
-- [x] Authentication middleware fix (NEWLY COMPLETED - 2025/11/02)
-- [x] Database schema migration - user_answers separation (NEWLY COMPLETED - 2025/11/02)
+- [x] Quiz taking flow
+- [x] Results calculation and display
+- [x] Quiz browsing (all/hot/recent)
+- [x] User quiz history
+- [x] Home page enhancement
+- [x] SNS sharing functionality
+- [x] Bookmark/favorite system
+- [x] Shared quiz display components
+- [x] User dashboard portal page (2025/11/02)
+- [x] Authentication middleware fix (2025/11/02)
+- [x] Database schema migration - user_answers separation (2025/11/02)
+- [x] Mypage functionality enhancement (2025/11/02)
+  - [x] Login redirect to mypage
+  - [x] Quiz requests table integration
+  - [x] User's created quizzes list page
+  - [x] Quiz edit page with publish toggle
+  - [x] Pending quiz tracking and display
+  - [x] Homepage improvement
 
 ### 🔄 In Progress
 

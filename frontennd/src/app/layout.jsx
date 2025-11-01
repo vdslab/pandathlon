@@ -95,6 +95,9 @@ export default async function RootLayout({ children }) {
                     <Link href="/mypage/quizzes/new">診断を作る</Link>
                   </li>
                   <li>
+                    <Link href="/mypage/quizzes">作成した診断</Link>
+                  </li>
+                  <li>
                     <Link href="/mypage/history">診断履歴</Link>
                   </li>
                   <li>

@@ -247,6 +247,17 @@ Deno.serve(async (req) => {
   }
   console.log(data);
 
+  // Delete from quiz_requests table after successful processing
+  const { error: deleteError } = await supabase
+    .from("quiz_requests")
+    .delete()
+    .eq("creator_id", request.creator_id)
+    .eq("content->title", request.title);
+
+  if (deleteError) {
+    console.error("Error deleting quiz request:", deleteError);
+  }
+
   return new Response(JSON.stringify({ message: "ok" }), {
     headers: { "Content-Type": "application/json" },
   });

@@ -119,22 +119,30 @@ export default async function Home() {
         </div>
       )}
 
-      {/* User-specific section */}
-      {user && (
-        <div className="card bg-base-200 shadow-xl">
-          <div className="card-body">
-            <h2 className="card-title">マイページ</h2>
-            <div className="grid md:grid-cols-2 gap-4 mt-4">
-              <Link href="/mypage/quizzes/new" className="btn btn-accent">
-                診断を作る
-              </Link>
-              <Link href="/mypage/history" className="btn btn-outline">
-                診断履歴を見る
-              </Link>
+      {/* My page or Login link */}
+      <div className="mb-12">
+        {user ? (
+          <Link
+            href="/mypage"
+            className="card bg-gradient-to-r from-green-500 to-teal-500 text-white shadow-xl hover:shadow-2xl transition-shadow"
+          >
+            <div className="card-body">
+              <h3 className="card-title text-2xl">👤 マイページ</h3>
+              <p>あなたの診断、履歴、お気に入りを管理</p>
             </div>
-          </div>
-        </div>
-      )}
+          </Link>
+        ) : (
+          <Link
+            href="/login"
+            className="card bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-xl hover:shadow-2xl transition-shadow"
+          >
+            <div className="card-body">
+              <h3 className="card-title text-2xl">🔑 ログイン</h3>
+              <p>診断を作成・管理するにはログインが必要です</p>
+            </div>
+          </Link>
+        )}
+      </div>
     </div>
   );
 }
