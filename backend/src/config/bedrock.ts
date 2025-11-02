@@ -6,6 +6,7 @@ const awsSecretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
 
 const bedrockModelArn = process.env.BEDROCK_MODEL_ARN;
 const bedrockImageModelArn = process.env.BEDROCK_IMAGE_MODEL_ARN;
+const bedrockEmbeddingModelArn = process.env.BEDROCK_EMBEDDING_MODEL_ARN;
 
 if (!bedrockModelArn) {
 	throw new Error("BEDROCK_MODEL_ARNが設定されていません");
@@ -13,6 +14,10 @@ if (!bedrockModelArn) {
 
 if (!bedrockImageModelArn) {
 	throw new Error("BEDROCK_IMAGE_MODEL_ARNが設定されていません");
+}
+
+if (!bedrockEmbeddingModelArn) {
+	throw new Error("BEDROCK_EMBEDDING_MODEL_ARNが設定されていません");
 }
 
 // Claude用のBedrockクライアント
@@ -31,3 +36,4 @@ export const bedrockClient = new BedrockRuntimeClient({
 });
 export const BEDROCK_MODEL_ARN: string = bedrockModelArn;
 export const BEDROCK_IMAGE_MODEL_ARN = bedrockImageModelArn;
+export const BEDROCK_EMBEDDING_MODEL_ARN = bedrockEmbeddingModelArn;

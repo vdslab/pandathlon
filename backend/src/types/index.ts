@@ -93,3 +93,17 @@ export type QuizResponse = {
 	quiz_elements: BedrockQuizElement[];
 	quiz_results: BedrockQuizResult[];
 };
+
+// ベクトル埋め込みに関する型定義
+
+/** ベクトル埋め込みリクエスト型 */
+export type EmbeddingRequest = {
+	text: string;
+};
+
+/** ベクトル埋め込みレスポンス型 */
+export type EmbeddingResponse = {
+	embedding: number[];
+	dimensions: number;
+	inputTextTokenCount: number;
+};

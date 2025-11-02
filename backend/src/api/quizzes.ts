@@ -1,8 +1,9 @@
 import type { FastifyInstance, FastifyPluginCallback } from "fastify";
-import type { QuizRequest, QuizResponse } from "../types/index.js";
+import type { QuizRequest, QuizResponse, EmbeddingRequest, EmbeddingResponse } from "../types/index.js";
 import type { GenerateSingleImageRequest } from "../types/image.js";
 import { generateQuizContent } from "../services/bedrockTextService.js";
 import { generateImageBinary } from "../services/bedrockImageService.js";
+import { generateEmbedding } from "../services/bedrockVectorService.js";
 	
 export const quizzesRoutes: FastifyPluginCallback = (fastify: FastifyInstance, options, done) => {
 	/**
@@ -37,6 +38,22 @@ export const quizzesRoutes: FastifyPluginCallback = (fastify: FastifyInstance, o
 				.code(200)
 				.header("Content-Type", "image/png")
 				.send(imageBuffer);
+		}
+	);
+
+	/**
+	 * ベクトル埋め込み生成エンドポイント
+	 * @param request - リクエスト
+	 * @param reply - レスポンス
+	 * @returns ベクトル埋め込み
+	 */
+	fastify.post<{ Body: EmbeddingRequest }>(
+		"/api/vector",
+		async (request, reply) => {
+			const { text } = request.body;
+
+			const response: EmbeddingResponse = await generateEmbedding(text);
+			return reply.code(200).send(response);
 		}
 	);
 
