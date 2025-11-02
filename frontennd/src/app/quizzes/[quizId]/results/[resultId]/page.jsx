@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { createClient } from "../../../../../utils/supabase/server";
 import Link from "next/link";
+import Image from "next/image";
 import ShareButtons from "../ShareButtons";
 
 async function ResultsContent({ params }) {
@@ -127,6 +128,17 @@ async function ResultsContent({ params }) {
             あなたの診断結果
           </h2>
           <h3 className="text-xl font-bold mb-4">{result.title}</h3>
+          {result.image_url && (
+            <div className="mb-4 relative w-full aspect-video">
+              <Image
+                src={result.image_url}
+                alt={result.title}
+                fill
+                className="rounded-lg object-cover"
+                priority
+              />
+            </div>
+          )}
           <p className="whitespace-pre-wrap text-base-content/80">
             {result.content}
           </p>
@@ -239,7 +251,7 @@ export async function generateMetadata({ params }) {
     // Fetch the winning result details
     const { data: result } = await supabase
       .from("quiz_results")
-      .select("title, content")
+      .select("title, content, image_url")
       .eq("id", winningResultId)
       .single();
 
@@ -264,11 +276,13 @@ export async function generateMetadata({ params }) {
         title: resultTitle,
         description: resultDescription,
         type: "website",
+        images: result.image_url ? [{ url: result.image_url }] : undefined,
       },
       twitter: {
         card: "summary_large_image",
         title: resultTitle,
         description: resultDescription,
+        images: result.image_url ? [result.image_url] : undefined,
       },
     };
   } catch (error) {

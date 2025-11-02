@@ -65,9 +65,25 @@ CREATE TABLE public.quiz_results (
   created_at timestamp with time zone NOT NULL DEFAULT now(),
   quiz_id bigint NOT NULL,
   title text NOT NULL,
-  content text NOT NULL,
+  description text NOT NULL DEFAULT ''::text,
+  image_url text,
+  modifier text NOT NULL DEFAULT ''::text,
+  strengths text NOT NULL DEFAULT ''::text,
+  weaknesses text NOT NULL DEFAULT ''::text,
+  good_matches text NOT NULL DEFAULT ''::text,
+  bad_matches text NOT NULL DEFAULT ''::text,
+  advice text NOT NULL DEFAULT ''::text,
+  image_prompt text NOT NULL DEFAULT ''::text,
   CONSTRAINT quiz_results_pkey PRIMARY KEY (id),
   CONSTRAINT quiz_results_quiz_id_fkey FOREIGN KEY (quiz_id) REFERENCES public.quizzes(id)
+);
+CREATE TABLE public.quiz_vectors (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  quiz_result_id bigint NOT NULL,
+  embedding USER-DEFINED NOT NULL,
+  CONSTRAINT quiz_vectors_pkey PRIMARY KEY (id),
+  CONSTRAINT quiz_vectors_quiz_result_id_fkey FOREIGN KEY (quiz_result_id) REFERENCES public.quiz_results(id)
 );
 CREATE TABLE public.quizzes (
   id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,

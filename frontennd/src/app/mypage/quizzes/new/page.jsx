@@ -85,7 +85,12 @@ export default function MyQuizNewPage() {
                           required
                           onChange={(event) => {
                             const newQuizResults = [...quizResults];
-                            newQuizResults[i]["name"] = event.target.value;
+                            newQuizResults[i] = {
+                              ...quizResults[i],
+                              ...{
+                                description: event.target.value,
+                              },
+                            };
                             setQuizResults(newQuizResults);
                           }}
                         />
@@ -112,7 +117,12 @@ export default function MyQuizNewPage() {
                     required
                     onChange={(event) => {
                       const newQuizResults = [...quizResults];
-                      newQuizResults[i]["description"] = event.target.value;
+                      newQuizResults[i] = {
+                        ...quizResults[i],
+                        ...{
+                          description: event.target.value,
+                        },
+                      };
                       setQuizResults(newQuizResults);
                     }}
                   />
@@ -123,7 +133,7 @@ export default function MyQuizNewPage() {
           <button
             className="btn"
             onClick={() => {
-              setQuizResults([...quizResults, ""]);
+              setQuizResults([...quizResults, { name: "", description: "" }]);
             }}
           >
             診断結果を追加する
