@@ -21,5 +21,5 @@ export async function signup(formData) {
   }
 
   revalidatePath("/", "layout");
-  redirect("/");
+  redirect("/login");
 }
