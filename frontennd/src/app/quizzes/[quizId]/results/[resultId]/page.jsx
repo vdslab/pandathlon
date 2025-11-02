@@ -123,7 +123,7 @@ async function ResultsContent({ params }) {
       {/* Result card */}
       <div className="card bg-base-100 shadow-xl mb-8">
         <div className="card-body">
-          <h2 className="card-title text-2xl text-accent mb-4">
+          <h2 className="card-title text-2xl text-amber-800 mb-4">
             あなたの診断結果
           </h2>
           <h3 className="text-xl font-bold mb-4">{result.title}</h3>
