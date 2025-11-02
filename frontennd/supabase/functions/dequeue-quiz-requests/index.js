@@ -88,7 +88,7 @@ Deno.serve(async (req) => {
         if (error) {
           throw error;
         }
-        const { data } = supabase.storage
+        const { data } = await supabase.storage
           .from("quiz_result_images")
           .getPublicUrl(`${id}.png`);
         return data.publicUrl;
