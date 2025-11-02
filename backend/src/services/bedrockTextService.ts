@@ -91,39 +91,39 @@ ${types_description.map((t, i) => `${i + 1}. ${t}`).join(", ")}
  【出力形式】以下の形は必ず守ってください
  json
  {
-     "quizzes": {
-         "title": "string",
-         "description": "string",
-         "scale_type": "7-point (-3〜+3)",
-         "theme": "string",
-         "created_by": "system"
+  "quizzes": {
+    "title": "string",
+    "description": "string",
+    "scale_type": "7-point (-3〜+3)",
+    "theme": "string",
+    "created_by": "system"
+  },
+  "quiz_elements": [
+    {
+      "id": "number",
+      "question_text": "string",
+      "type_weights": {
+        "base_type1": "number",
+        "base_type2": "number",
+      }
+    }
+  ],
+  "quiz_results": [
+    {
+      "base_type": "string",
+      "modifier": "string",
+      "description": "string",
+      "strengths": ["string", "string", "string"],
+      "weaknesses": ["string", "string", "string"],
+      "good_match": {
+        "best_matches": ["string", "string"],
+        "worst_matches": ["string", "string"],
+        "reasons": "string"
       },
-      "quiz_elements": [
-          {
-              "id": "number",
-              "question_text": "string",
-              "type_weights": {
-                  "base_type1": "number",
-                  "base_type2": "number",
-               }
-           }
-       ],
-       "quiz_results": [
-           {
-               "base_type": "string",
-               "modifier": "string",
-               "description": "string",
-              "strengths": ["string", "string", "string"],
-              "weaknesses": ["string", "string", "string"],
-              good_match: {
-                "best_matches": ["string", "string"],
-                "worst_matches": ["string", "string"],
-                "reasons": "string",
-              },
-              "advice": "string",
-           }
-        ],
-  }
+      "advice": "string"
+    }
+  ]
+}
 必ず${
 			types.length
 		}個の結果を生成してください。（制約：これが一致するまで繰り返し実行してください）`;
