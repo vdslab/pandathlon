@@ -23,7 +23,9 @@ export default async function Home() {
           <div className="max-w-md">
             <h1 className="text-5xl font-bold mb-4">カス診断</h1>
             <p className="text-xl mb-6">
-              あなただけの性格診断を作成・共有しよう
+              あなただけの性格診断を
+              <br className="block md:hidden" />
+              作成・共有しよう
             </p>
             <div className="flex gap-4 justify-center">
               {user ? (
