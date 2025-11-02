@@ -74,7 +74,7 @@ export default async function Home() {
         <div className="grid md:grid-cols-2 gap-4">
           <Link
             href="/quizzes/hot"
-            className="card bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-xl hover:shadow-2xl transition-shadow"
+            className="card bg-gradient-to-r from-amber-400 to-red-400 text-white shadow-xl hover:shadow-2xl transition-shadow"
           >
             <div className="card-body">
               <h3 className="card-title text-2xl">🔥 人気の診断</h3>
@@ -83,7 +83,7 @@ export default async function Home() {
           </Link>
           <Link
             href="/quizzes/recent"
-            className="card bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-xl hover:shadow-2xl transition-shadow"
+            className="card bg-gradient-to-r from-blue-400 to-purple-400 text-white shadow-xl hover:shadow-2xl transition-shadow"
           >
             <div className="card-body">
               <h3 className="card-title text-2xl">✨ 最近の診断</h3>
@@ -134,7 +134,7 @@ export default async function Home() {
         ) : (
           <Link
             href="/login"
-            className="card bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-xl hover:shadow-2xl transition-shadow"
+            className="card bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-xl hover:shadow-2xl transition-shadow"
           >
             <div className="card-body">
               <h3 className="card-title text-2xl">🔑 ログイン</h3>
