@@ -18,8 +18,7 @@ export default function MyQuizNewPage() {
       title: formData.get("title"),
       description: formData.get("description"),
       questions_count: formData.get("questions_count"),
-      types: formData.getAll("types"),
-      type_descriptions: formData.getAll("type_descriptions"),
+      types: quizResults,
     };
     console.log(data);
     const supabase = createClient();
@@ -27,7 +26,7 @@ export default function MyQuizNewPage() {
       "enqueue-quiz-requests",
       {
         body: data,
-      }
+      },
     );
     console.log(result);
     console.log(error);
@@ -85,7 +84,7 @@ export default function MyQuizNewPage() {
                     <label className="input join-item w-full">
                       <input
                         type="text"
-                        name="types_descriptions"
+                        name="type_descriptions"
                         placeholder={`診断結果${i + 1}の内容`}
                         value={item.description}
                         required
