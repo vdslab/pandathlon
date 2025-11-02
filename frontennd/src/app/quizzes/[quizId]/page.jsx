@@ -189,7 +189,6 @@ export default function QuizPage({ params }) {
                   {value === 2 && "そう思う"}
                   {value === 3 && "とてもそう思う"}
                 </span>
-                <span className="badge badge-neutral">{value}</span>
               </label>
             ))}
           </div>
