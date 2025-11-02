@@ -4,7 +4,9 @@
 
 ### Immediate Status
 
-**Latest Update (2025/11/02)**: Queue processing error handling improved. Fixed critical issue where PGMQ messages were deleted immediately on read, causing data loss on errors. Implemented proper read-archive pattern with quiz_requests_id tracking for reliable queue management and error recovery.
+**Latest Update (2025/11/02)**: Results page URL structure improved and SNS metadata enhanced. Changed from query parameters (`?answerId=123`) to path parameters (`/results/[resultId]`) for cleaner URLs. Enriched OGP/Twitter Card metadata to include actual quiz result information (result type title and content) for better SNS sharing previews.
+
+**Previous Update (2025/11/02)**: Queue processing error handling improved. Fixed critical issue where PGMQ messages were deleted immediately on read, causing data loss on errors. Implemented proper read-archive pattern with quiz_requests_id tracking for reliable queue management and error recovery.
 
 **Previous Update (2025/11/02)**: PWA manifest integration completed. Added manifest.json and icon files to frontend/public, integrated into layout.jsx using Next.js Metadata API for Progressive Web App capabilities.
 

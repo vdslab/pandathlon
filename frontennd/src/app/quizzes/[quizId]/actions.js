@@ -57,5 +57,5 @@ export async function submitQuizAnswers(quizId, answers) {
   }
 
   // Redirect to results page
-  redirect(`/quizzes/${quizId}/results?answerId=${answerData.id}`);
+  redirect(`/quizzes/${quizId}/results/${answerData.id}`);
 }

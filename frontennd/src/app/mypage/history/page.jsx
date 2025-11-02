@@ -117,7 +117,7 @@ export default async function HistoryPage() {
                   </div>
                   <div className="flex flex-col gap-2">
                     <Link
-                      href={`/quizzes/${answer.quiz_id}/results?answerId=${answer.id}`}
+                      href={`/quizzes/${answer.quiz_id}/results/${answer.id}`}
                       className="btn btn-accent btn-sm"
                     >
                       結果を見る

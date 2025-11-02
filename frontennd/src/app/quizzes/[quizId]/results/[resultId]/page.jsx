@@ -1,13 +1,13 @@
 import { Suspense } from "react";
-import { createClient } from "../../../../utils/supabase/server";
+import { createClient } from "../../../../../utils/supabase/server";
 import Link from "next/link";
-import ShareButtons from "./ShareButtons";
+import ShareButtons from "../ShareButtons";
 
-async function ResultsContent({ params, searchParams }) {
+async function ResultsContent({ params }) {
   const quizId = (await params).quizId;
-  const answerId = (await searchParams).answerId;
+  const resultId = (await params).resultId;
 
-  if (!answerId) {
+  if (!resultId) {
     return (
       <div className="alert alert-error">
         <span>回答IDが指定されていません</span>
@@ -47,7 +47,7 @@ async function ResultsContent({ params, searchParams }) {
       )
     `,
     )
-    .eq("answer_id", answerId);
+    .eq("answer_id", resultId);
 
   if (answerDetailsError) {
     console.error("Error fetching answer details:", answerDetailsError);
@@ -64,13 +64,13 @@ async function ResultsContent({ params, searchParams }) {
   answerDetails.forEach((detail) => {
     const elementScores = detail.quiz_elements.quiz_element_score;
     elementScores.forEach((elementScore) => {
-      const resultId = elementScore.quiz_result_id;
+      const resultTypeId = elementScore.quiz_result_id;
       const weightedScore = detail.answer * elementScore.score;
 
-      if (!scores[resultId]) {
-        scores[resultId] = 0;
+      if (!scores[resultTypeId]) {
+        scores[resultTypeId] = 0;
       }
-      scores[resultId] += weightedScore;
+      scores[resultTypeId] += weightedScore;
     });
   });
 
@@ -78,10 +78,10 @@ async function ResultsContent({ params, searchParams }) {
   let maxScore = -Infinity;
   let winningResultId = null;
 
-  for (const [resultId, score] of Object.entries(scores)) {
+  for (const [resultTypeId, score] of Object.entries(scores)) {
     if (score > maxScore) {
       maxScore = score;
-      winningResultId = resultId;
+      winningResultId = resultTypeId;
     }
   }
 
@@ -110,7 +110,7 @@ async function ResultsContent({ params, searchParams }) {
 
   // Generate share URL and text
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-  const resultUrl = `${baseUrl}/quizzes/${quizId}/results?answerId=${answerId}`;
+  const resultUrl = `${baseUrl}/quizzes/${quizId}/results/${resultId}`;
   const shareText = `${quiz.title}の診断結果: ${result.title}`;
   const twitterShareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
     shareText,
@@ -157,11 +157,11 @@ async function ResultsContent({ params, searchParams }) {
   );
 }
 
-export async function generateMetadata({ params, searchParams }) {
+export async function generateMetadata({ params }) {
   const quizId = (await params).quizId;
-  const answerId = (await searchParams).answerId;
+  const resultId = (await params).resultId;
 
-  if (!answerId) {
+  if (!resultId) {
     return {
       title: "診断結果",
     };
@@ -170,6 +170,7 @@ export async function generateMetadata({ params, searchParams }) {
   try {
     const supabase = await createClient();
 
+    // Fetch quiz data
     const { data: quiz } = await supabase
       .from("quizzes")
       .select("title, description")
@@ -180,26 +181,103 @@ export async function generateMetadata({ params, searchParams }) {
       return { title: "診断結果" };
     }
 
-    return {
-      title: `${quiz.title} - 診断結果`,
-      description: quiz.description,
-      openGraph: {
+    // Fetch answer details to calculate result
+    const { data: answerDetails } = await supabase
+      .from("answer_details")
+      .select(
+        `
+        answer,
+        quiz_element_id,
+        quiz_elements!inner(
+          quiz_element_score(
+            quiz_result_id,
+            score
+          )
+        )
+      `,
+      )
+      .eq("answer_id", resultId);
+
+    if (!answerDetails || answerDetails.length === 0) {
+      return {
         title: `${quiz.title} - 診断結果`,
         description: quiz.description,
+      };
+    }
+
+    // Calculate scores
+    const scores = {};
+    answerDetails.forEach((detail) => {
+      const elementScores = detail.quiz_elements.quiz_element_score;
+      elementScores.forEach((elementScore) => {
+        const resultTypeId = elementScore.quiz_result_id;
+        const weightedScore = detail.answer * elementScore.score;
+        if (!scores[resultTypeId]) {
+          scores[resultTypeId] = 0;
+        }
+        scores[resultTypeId] += weightedScore;
+      });
+    });
+
+    // Find winning result
+    let maxScore = -Infinity;
+    let winningResultId = null;
+    for (const [resultTypeId, score] of Object.entries(scores)) {
+      if (score > maxScore) {
+        maxScore = score;
+        winningResultId = resultTypeId;
+      }
+    }
+
+    if (!winningResultId) {
+      return {
+        title: `${quiz.title} - 診断結果`,
+        description: quiz.description,
+      };
+    }
+
+    // Fetch the winning result details
+    const { data: result } = await supabase
+      .from("quiz_results")
+      .select("title, content")
+      .eq("id", winningResultId)
+      .single();
+
+    if (!result) {
+      return {
+        title: `${quiz.title} - 診断結果`,
+        description: quiz.description,
+      };
+    }
+
+    // Create rich metadata with actual result information
+    const resultTitle = `【${result.title}】 - ${quiz.title}`;
+    const resultDescription =
+      result.content.length > 150
+        ? result.content.substring(0, 150) + "..."
+        : result.content;
+
+    return {
+      title: resultTitle,
+      description: resultDescription,
+      openGraph: {
+        title: resultTitle,
+        description: resultDescription,
         type: "website",
       },
       twitter: {
         card: "summary_large_image",
-        title: `${quiz.title} - 診断結果`,
-        description: quiz.description,
+        title: resultTitle,
+        description: resultDescription,
       },
     };
   } catch (error) {
+    console.error("Error generating metadata:", error);
     return { title: "診断結果" };
   }
 }
 
-export default async function ResultsPage({ params, searchParams }) {
+export default async function ResultsPage({ params }) {
   return (
     <Suspense
       fallback={
@@ -208,7 +286,7 @@ export default async function ResultsPage({ params, searchParams }) {
         </div>
       }
     >
-      <ResultsContent params={params} searchParams={searchParams} />
+      <ResultsContent params={params} />
     </Suspense>
   );
 }

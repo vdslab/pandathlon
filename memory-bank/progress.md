@@ -56,14 +56,20 @@ All major routes are defined and accessible:
   - Server action for answer submission
   - Works for both logged-in and anonymous users
 
-- **Quiz Results Page** (`/quizzes/[quizId]/results`)
+- **Quiz Results Page** (`/quizzes/[quizId]/results/[resultId]`) - IMPROVED 2025/11/02
 
+  - **Clean URL Structure**: Uses path parameters instead of query parameters
+    - Old: `/quizzes/[quizId]/results?answerId=123`
+    - New: `/quizzes/[quizId]/results/[resultId]`
+  - **Enhanced SNS Metadata**: Includes actual quiz result information
+    - Title: `【Result Type Name】 - Quiz Title`
+    - Description: Result content (truncated to 150 chars)
+    - Rich OGP/Twitter Card metadata for better social sharing previews
   - Server-side score calculation
   - Determines winning result type based on weighted scores
   - Displays detailed result information
   - SNS sharing (X/Twitter) via ShareButtons component
   - URL copy functionality
-  - OGP metadata for social sharing
   - Client/Server component separation pattern
 
 - **Answer Submission** (`/quizzes/[quizId]/actions.js`)
@@ -71,7 +77,7 @@ All major routes are defined and accessible:
   - Inserts to `answers` table (without user_id)
   - If user is logged in, additionally links via `user_answers` table
   - Inserts individual question answers to `answer_details` table
-  - Redirects to results page
+  - Redirects to results page with new URL structure
   - Supports both anonymous and authenticated quiz taking
 
 ### ✅ Quiz Discovery Pages (NEWLY COMPLETED)
