@@ -60,6 +60,22 @@ weaknesses（このタイプの弱み・短所を説明する文章、100〜150�
 good_matches（相性の良いタイプ2つ、オプショナル）
 bad_matches（相性の悪いタイプ2つ、オプショナル）
 advice（100〜150字）
+image_prompt（画像生成用の英語プロンプト、100〜200文字）
+
+5️⃣ 画像生成用プロンプト
+各タイプについて、Amazon Nova Canvasで画像を生成するための英語プロンプトを作成してください：
+- **必ず最初にタイプ名（modifier + base_type）を含めること**（例：「Destiny-Bound Hero」「Star-Reading Mage」）
+  これにより画像生成の指針が明確になり、精度が向上します
+- 英語で記述すること（Nova Canvasは英語プロンプトを推奨）
+- そのタイプの特徴や雰囲気を視覚的に表現する内容
+- 全年齢対象で、争いや危険な行為の描写を避けること
+- 穏やかでファンタジー調のスタイルを指定
+- 具体的な視覚要素を含める（キャラクターの雰囲気、背景、色調など）
+
+例（必ずタイプ名から始める）：
+- "Destiny-Bound Hero A positive leader who inspires hope. You care for your companions and calmly organize situations, guiding everyone toward a bright outcome. No depictions of conflict or dangerous acts; a gentle, wholesome fantasy style."
+- "Star-Reading Mage A calm, dependable planner who charts the course with knowledge and intuition. Uses gentle, non-combat magic—like light or breeze—to set the scene and bring out allies' strengths. A composed observer who guides toward the best move. (No combat depictions, no weapons; suitable for all ages.)"
+
 
 ────────────────────────────
 【出力形式】
@@ -92,7 +108,8 @@ advice（100〜150字）
       "weaknesses": "string",
       "good_matches": ["string", "string"],
       "bad_matches": ["string", "string"],
-      "advice": "string"
+      "advice": "string",
+      "image_prompt": "string"
     }
   ]
 }

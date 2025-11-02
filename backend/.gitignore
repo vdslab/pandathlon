@@ -3,4 +3,6 @@ dist
 .env
 *.log
 .DS_Store
+test-output
+generated_images
 

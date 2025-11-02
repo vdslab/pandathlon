@@ -38,6 +38,7 @@ export type BedrockQuizResult = {
 	good_matches?: [string, string];
 	bad_matches?: [string, string];
 	advice: string;
+	image_prompt: string;
 };
 
 /** Bedrock APIから返却されたJSONデータをパースした型 */
