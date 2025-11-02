@@ -1,19 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "../../../../utils/supabase/client";
 
 export default function MyQuizNewPage() {
+  const router = useRouter();
   const [quizResults, setQuizResults] = useState([
     { name: "", description: "" },
     { name: "", description: "" },
   ]);
 
   async function createQuiz(formData) {
-    setQuizResults([
-      { name: "", description: "" },
-      { name: "", description: "" },
-    ]);
     const data = {
       title: formData.get("title"),
       description: formData.get("description"),
@@ -30,6 +28,16 @@ export default function MyQuizNewPage() {
     );
     console.log(result);
     console.log(error);
+
+    if (!error) {
+      // Reset form state
+      setQuizResults([
+        { name: "", description: "" },
+        { name: "", description: "" },
+      ]);
+      // Redirect to "作成した診断" page
+      router.push("/mypage/quizzes");
+    }
   }
 
   return (
@@ -65,48 +73,49 @@ export default function MyQuizNewPage() {
           <div>
             {quizResults.map((item, i) => {
               return (
-                <div className="join w-full mb-2" key={i}>
-                  <div className="w-full">
-                    <label className="input join-item w-full">
-                      <input
-                        type="text"
-                        name="types"
-                        placeholder={`診断結果${i + 1}`}
-                        value={item.name}
-                        required
-                        onChange={(event) => {
-                          const newQuizResults = [...quizResults];
-                          newQuizResults[i]["name"] = event.target.value;
-                          setQuizResults(newQuizResults);
-                        }}
-                      />
-                    </label>
-                    <label className="input join-item w-full">
-                      <input
-                        type="text"
-                        name="type_descriptions"
-                        placeholder={`診断結果${i + 1}の内容`}
-                        value={item.description}
-                        required
-                        onChange={(event) => {
-                          const newQuizResults = [...quizResults];
-                          newQuizResults[i]["description"] = event.target.value;
-                          setQuizResults(newQuizResults);
-                        }}
-                      />
-                    </label>
+                <div key={i}>
+                  <div className="join w-full mb-2">
+                    <div className="w-full">
+                      <label className="input join-item w-full">
+                        <input
+                          type="text"
+                          name="types"
+                          placeholder={`診断結果${i + 1}`}
+                          value={item.name}
+                          required
+                          onChange={(event) => {
+                            const newQuizResults = [...quizResults];
+                            newQuizResults[i]["name"] = event.target.value;
+                            setQuizResults(newQuizResults);
+                          }}
+                        />
+                      </label>
+                    </div>
+                    <button
+                      className="btn join-item"
+                      onClick={() => {
+                        const newQuizResults = [...quizResults];
+                        newQuizResults.splice(i, 1);
+                        setQuizResults(newQuizResults);
+                      }}
+                      disabled={quizResults.length <= 2}
+                    >
+                      -
+                    </button>
                   </div>
-                  <button
-                    className="btn join-item"
-                    onClick={() => {
+                  <input
+                    type="text"
+                    className="input w-full mb-4"
+                    name="type_descriptions"
+                    placeholder={`診断結果${i + 1}の内容`}
+                    value={item.description}
+                    required
+                    onChange={(event) => {
                       const newQuizResults = [...quizResults];
-                      newQuizResults.splice(i, 1);
+                      newQuizResults[i]["description"] = event.target.value;
                       setQuizResults(newQuizResults);
                     }}
-                    disabled={quizResults.length <= 2}
-                  >
-                    -
-                  </button>
+                  />
                 </div>
               );
             })}
