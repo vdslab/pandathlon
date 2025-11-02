@@ -3,11 +3,14 @@ import Link from "next/link";
 import { createClient } from "../utils/supabase/server";
 import { logout } from "./login/actions";
 
+export const viewport = {
+  themeColor: "#000000",
+};
+
 export const metadata = {
   title: "カスタム診断メーカー",
   description: "あなただけの性格診断を作成・共有しよう",
   manifest: "/manifest.json",
-  themeColor: "#000000",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
@@ -23,6 +26,27 @@ export const metadata = {
       { url: "/icons/icon-152x152.png", sizes: "152x152", type: "image/png" },
       { url: "/icons/icon-120x120.png", sizes: "120x120", type: "image/png" },
     ],
+  },
+  openGraph: {
+    title: "カスタム診断メーカー",
+    description: "あなただけの性格診断を作成・共有しよう",
+    siteName: "カス診断",
+    locale: "ja_JP",
+    type: "website",
+    images: [
+      {
+        url: "/ogp.png",
+        width: 1200,
+        height: 630,
+        alt: "カス診断 - カスタム診断メーカー",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "カスタム診断メーカー",
+    description: "あなただけの性格診断を作成・共有しよう",
+    images: ["/ogp.png"],
   },
 };
 
