@@ -5,7 +5,7 @@ import PublishedToggle from "./PublishedToggle";
 
 export async function generateMetadata({ params }) {
   return {
-    title: "診断を編集 - カス診断",
+    title: "診断を編集 - カスタム診断メーカー",
   };
 }
 

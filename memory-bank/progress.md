@@ -449,6 +449,13 @@ None identified yet (limited testing so far)
   - [x] Wrap processing in try-catch
   - [x] Delete by ID on success, message stays on error
   - [x] Automatic retry via visibility timeout
+- [x] UI branding update (2025/11/04)
+  - [x] Changed "カス診断" to "カスタム診断メーカー" across all UI
+  - [x] Updated main page heading (page.jsx)
+  - [x] Updated app manifest (manifest.json)
+  - [x] Updated layout metadata (layout.jsx) - title, siteName, alt, navigation link
+  - [x] Updated all page metadata titles (9 page files)
+  - [x] Total: 13 locations across 11 files
 
 ### 🔄 In Progress
 

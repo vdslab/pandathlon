@@ -4,7 +4,7 @@ import Link from "next/link";
 import QuizCard from "../../components/QuizCard";
 
 export const metadata = {
-  title: "お気に入り - カス診断",
+  title: "お気に入り - カスタム診断メーカー",
   description: "お気に入り登録した診断",
 };
 

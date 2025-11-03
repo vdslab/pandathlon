@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 
 export const metadata = {
-  title: "作成した診断 - カス診断",
+  title: "作成した診断 - カスタム診断メーカー",
   description: "あなたが作成した診断一覧",
 };
 

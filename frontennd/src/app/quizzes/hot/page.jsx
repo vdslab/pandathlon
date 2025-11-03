@@ -3,7 +3,7 @@ import Link from "next/link";
 import QuizCard from "../../components/QuizCard";
 
 export const metadata = {
-  title: "人気の診断 - カス診断",
+  title: "人気の診断 - カスタム診断メーカー",
   description: "回答数が多い人気の診断一覧",
 };
 
