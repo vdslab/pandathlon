@@ -11,6 +11,13 @@ export async function submitQuizAnswers(quizId, answers) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  // Get quiz to check published status
+  const { data: quiz } = await supabase
+    .from("quizzes")
+    .select("published")
+    .eq("id", quizId)
+    .single();
+
   // Insert answer record (without user_id)
   const { data: answerData, error: answerError } = await supabase
     .from("answers")
@@ -41,8 +48,8 @@ export async function submitQuizAnswers(quizId, answers) {
     throw new Error("回答の送信に失敗しました");
   }
 
-  // If user is logged in, link answer to user in user_answers table
-  if (user?.id) {
+  // If user is logged in AND quiz is published, link answer to user in user_answers table
+  if (user?.id && quiz?.published) {
     const { error: userAnswerError } = await supabase
       .from("user_answers")
       .insert({

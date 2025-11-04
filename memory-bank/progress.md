@@ -456,6 +456,17 @@ None identified yet (limited testing so far)
   - [x] Updated layout metadata (layout.jsx) - title, siteName, alt, navigation link
   - [x] Updated all page metadata titles (9 page files)
   - [x] Total: 13 locations across 11 files
+- [x] Quiz edit functionality enhancement (2025/11/04)
+  - [x] Implemented unified tab-based UI for editing and viewing
+  - [x] Added read-only mode support with proper layout
+  - [x] BasicInfoTab fully supports read-only mode
+    - [x] Vertical label-field alignment (w-full on form-control)
+    - [x] Full-width inputs (w-full max-w-full on input/textarea)
+    - [x] Disabled state for published quizzes
+  - [x] QuestionsTab fully supports read-only mode
+    - [x] Same layout improvements as BasicInfoTab
+    - [x] Hidden add/delete buttons in read-only mode
+  - [x] ResultTypesTab and ScoreWeightsTab require read-only implementation
 
 ### 🔄 In Progress
 

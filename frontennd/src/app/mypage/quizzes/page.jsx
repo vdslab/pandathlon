@@ -265,6 +265,7 @@ export default async function MyQuizzesPage() {
                         <Link
                           href={`/quizzes/${quiz.id}`}
                           className="btn btn-ghost btn-sm"
+                          target="_blank"
                         >
                           <svg
                             className="w-4 h-4"
@@ -286,7 +287,7 @@ export default async function MyQuizzesPage() {
                               d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
                             />
                           </svg>
-                          プレビュー
+                          診断ページ
                         </Link>
                       )}
                       <Link
@@ -300,14 +301,23 @@ export default async function MyQuizzesPage() {
                           viewBox="0 0 24 24"
                           xmlns="http://www.w3.org/2000/svg"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                          />
+                          {quiz.published ? (
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                            />
+                          ) : (
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                            />
+                          )}
                         </svg>
-                        編集
+                        {quiz.published ? "詳細" : "編集"}
                       </Link>
                     </div>
                   </div>
