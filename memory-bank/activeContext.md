@@ -4,7 +4,11 @@
 
 ### Immediate Status
 
-**Latest Update (2025/11/02)**: Results page URL structure improved and SNS metadata enhanced. Changed from query parameters (`?answerId=123`) to path parameters (`/results/[resultId]`) for cleaner URLs. Enriched OGP/Twitter Card metadata to include actual quiz result information (result type title and content) for better SNS sharing previews.
+**Latest Update (2025/11/04)**: Quiz edit functionality enhanced with read-only mode. Implemented unified tab-based UI for both editing and viewing published quizzes. BasicInfoTab and QuestionsTab now fully support read-only mode with proper layout (vertical label-field alignment, full-width inputs). Remaining tabs (ResultTypesTab, ScoreWeightsTab) require read-only implementation.
+
+**Previous Update (2025/11/04)**: UI branding update completed. Changed all occurrences of "カス診断" to "カスタム診断メーカー" across the application for better clarity and professionalism. Updated 11 files including main page heading, app manifest, page metadata titles, navigation links, and OGP tags.
+
+**Previous Update (2025/11/02)**: Results page URL structure improved and SNS metadata enhanced. Changed from query parameters (`?answerId=123`) to path parameters (`/results/[resultId]`) for cleaner URLs. Enriched OGP/Twitter Card metadata to include actual quiz result information (result type title and content) for better SNS sharing previews.
 
 **Previous Update (2025/11/02)**: Queue processing error handling improved. Fixed critical issue where PGMQ messages were deleted immediately on read, causing data loss on errors. Implemented proper read-archive pattern with quiz_requests_id tracking for reliable queue management and error recovery.
 

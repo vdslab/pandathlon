@@ -88,7 +88,7 @@ export default function MyQuizNewPage() {
                             newQuizResults[i] = {
                               ...quizResults[i],
                               ...{
-                                description: event.target.value,
+                                name: event.target.value,
                               },
                             };
                             setQuizResults(newQuizResults);

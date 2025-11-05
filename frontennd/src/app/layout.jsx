@@ -14,7 +14,7 @@ export const metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "カス診断",
+    title: "カスタム診断メーカー",
   },
   icons: {
     icon: [
@@ -30,7 +30,7 @@ export const metadata = {
   openGraph: {
     title: "カスタム診断メーカー",
     description: "あなただけの性格診断を作成・共有しよう",
-    siteName: "カス診断",
+    siteName: "カスタム診断メーカー",
     locale: "ja_JP",
     type: "website",
     images: [
@@ -38,7 +38,7 @@ export const metadata = {
         url: "/ogp.png",
         width: 1200,
         height: 630,
-        alt: "カス診断 - カスタム診断メーカー",
+        alt: "カスタム診断メーカー",
       },
     ],
   },
@@ -85,7 +85,7 @@ export default async function RootLayout({ children }) {
                 </label>
               </div>
               <div className="mx-2 flex-1 px-2">
-                <Link href="/">カス診断</Link>
+                <Link href="/">カスタム診断メーカー</Link>
               </div>
               <div className="hidden flex-none lg:block">
                 <ul className="menu menu-horizontal">

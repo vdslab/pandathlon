@@ -1,6 +1,6 @@
 {
   "name": "カスタム診断メーカー",
-  "short_name": "カス診断",
+  "short_name": "カスタム診断メーカー",
   "description": "あなただけの性格診断を作成・共有しよう",
   "start_url": "/",
   "display": "standalone",

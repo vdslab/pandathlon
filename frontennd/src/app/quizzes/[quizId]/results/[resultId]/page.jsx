@@ -94,10 +94,12 @@ async function ResultsContent({ params }) {
     );
   }
 
-  // Fetch the winning result details
+  // Fetch the winning result details with all fields
   const { data: result, error: resultError } = await supabase
     .from("quiz_results")
-    .select("*")
+    .select(
+      "title, description, image_url, modifier, strengths, weaknesses, good_matches, bad_matches, advice",
+    )
     .eq("id", winningResultId)
     .single();
 
@@ -127,7 +129,14 @@ async function ResultsContent({ params }) {
           <h2 className="card-title text-2xl text-amber-800 mb-4">
             あなたの診断結果
           </h2>
-          <h3 className="text-xl font-bold mb-4">{result.title}</h3>
+          <h3 className="text-xl font-bold mb-4">
+            {result.title}
+            {result.modifier && (
+              <span className="text-base font-normal text-base-content/60 ml-2">
+                {result.modifier}
+              </span>
+            )}
+          </h3>
           {result.image_url && (
             <div className="mb-4 relative w-full aspect-video">
               <Image
@@ -140,10 +149,120 @@ async function ResultsContent({ params }) {
             </div>
           )}
           <p className="whitespace-pre-wrap text-base-content/80">
-            {result.content}
+            {result.description}
           </p>
         </div>
       </div>
+
+      {/* Strengths section */}
+      {result.strengths && (
+        <div className="card bg-base-100 shadow-xl mb-8">
+          <div className="card-body">
+            <h3 className="card-title text-lg mb-4">💪 強み</h3>
+            <p className="whitespace-pre-wrap text-base-content/80">
+              {result.strengths}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Weaknesses section */}
+      {result.weaknesses && (
+        <div className="card bg-base-100 shadow-xl mb-8">
+          <div className="card-body">
+            <h3 className="card-title text-lg mb-4">⚠️ 弱み</h3>
+            <p className="whitespace-pre-wrap text-base-content/80">
+              {result.weaknesses}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Compatibility section */}
+      {(result.good_matches || result.bad_matches) && (
+        <div className="card bg-base-100 shadow-xl mb-8">
+          <div className="card-body">
+            <h3 className="card-title text-lg mb-4">💝 相性</h3>
+            {result.good_matches &&
+              (() => {
+                try {
+                  const goodMatches =
+                    typeof result.good_matches === "string"
+                      ? JSON.parse(result.good_matches)
+                      : result.good_matches;
+                  return Array.isArray(goodMatches) &&
+                    goodMatches.length > 0 ? (
+                    <div className="mb-4">
+                      <h4 className="font-semibold mb-2 text-success">
+                        相性が良い:
+                      </h4>
+                      <ul className="list-disc list-inside space-y-1 text-base-content/80">
+                        {goodMatches.map((match, index) => (
+                          <li key={index}>{match}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null;
+                } catch (e) {
+                  return (
+                    <div className="mb-4">
+                      <h4 className="font-semibold mb-2 text-success">
+                        相性が良い:
+                      </h4>
+                      <p className="whitespace-pre-wrap text-base-content/80">
+                        {result.good_matches}
+                      </p>
+                    </div>
+                  );
+                }
+              })()}
+            {result.bad_matches &&
+              (() => {
+                try {
+                  const badMatches =
+                    typeof result.bad_matches === "string"
+                      ? JSON.parse(result.bad_matches)
+                      : result.bad_matches;
+                  return Array.isArray(badMatches) && badMatches.length > 0 ? (
+                    <div>
+                      <h4 className="font-semibold mb-2 text-error">
+                        相性が悪い:
+                      </h4>
+                      <ul className="list-disc list-inside space-y-1 text-base-content/80">
+                        {badMatches.map((match, index) => (
+                          <li key={index}>{match}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null;
+                } catch (e) {
+                  return (
+                    <div>
+                      <h4 className="font-semibold mb-2 text-error">
+                        相性が悪い:
+                      </h4>
+                      <p className="whitespace-pre-wrap text-base-content/80">
+                        {result.bad_matches}
+                      </p>
+                    </div>
+                  );
+                }
+              })()}
+          </div>
+        </div>
+      )}
+
+      {/* Advice section */}
+      {result.advice && (
+        <div className="card bg-base-100 shadow-xl mb-8">
+          <div className="card-body">
+            <h3 className="card-title text-lg mb-4">💡 アドバイス</h3>
+            <p className="whitespace-pre-wrap text-base-content/80">
+              {result.advice}
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Share section */}
       <div className="card bg-base-100 shadow-xl mb-8">
@@ -251,7 +370,7 @@ export async function generateMetadata({ params }) {
     // Fetch the winning result details
     const { data: result } = await supabase
       .from("quiz_results")
-      .select("title, content, image_url")
+      .select("title, description, image_url")
       .eq("id", winningResultId)
       .single();
 
@@ -265,9 +384,9 @@ export async function generateMetadata({ params }) {
     // Create rich metadata with actual result information
     const resultTitle = `【${result.title}】 - ${quiz.title}`;
     const resultDescription =
-      result.content.length > 150
-        ? result.content.substring(0, 150) + "..."
-        : result.content;
+      result.description.length > 150
+        ? result.description.substring(0, 150) + "..."
+        : result.description;
 
     return {
       title: resultTitle,

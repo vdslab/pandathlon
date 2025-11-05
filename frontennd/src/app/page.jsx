@@ -21,7 +21,7 @@ export default async function Home() {
       <div className="hero min-h-[50vh] bg-base-200 rounded-lg mb-8">
         <div className="hero-content text-center">
           <div className="max-w-md">
-            <h1 className="text-5xl font-bold mb-4">カス診断</h1>
+            <h1 className="text-5xl font-bold mb-4">カスタム診断メーカー</h1>
             <p className="text-xl mb-6">
               あなただけの性格診断を
               <br className="block md:hidden" />

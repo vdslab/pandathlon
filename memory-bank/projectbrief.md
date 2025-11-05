@@ -1,4 +1,4 @@
-# Project Brief: Pandathlon (カス診断)
+# Project Brief: Pandathlon (カスタム診断メーカー)
 
 ## Overview
 
